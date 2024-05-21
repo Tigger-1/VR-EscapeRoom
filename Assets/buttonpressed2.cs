@@ -5,6 +5,9 @@ using UnityEngine;
 public class buttonpressed2 : MonoBehaviour
 {
     public GameObject hint3;
+    public AudioClip audioClip; // Audio clip to play
+
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -17,6 +20,23 @@ public class buttonpressed2 : MonoBehaviour
         Debug.Log("Start method called, setting hint3 to inactive");
         hint3.SetActive(false);
         Debug.Log("hint3 active state: " + hint3.activeSelf);
+
+        // Get or add an AudioSource component
+        audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Assign the audio clip to the AudioSource
+        if (audioClip != null)
+        {
+            audioSource.clip = audioClip;
+        }
+        else
+        {
+            Debug.LogError("AudioClip is not assigned in the Inspector.");
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -29,6 +49,12 @@ public class buttonpressed2 : MonoBehaviour
 
         Debug.Log("OnTriggerEnter called with " + other.name);
         hint3.SetActive(true);
+
+        // Play the assigned audio clip if an audio clip is assigned to the AudioSource
+        if (audioSource != null && audioClip != null)
+        {
+            audioSource.Play();
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -41,6 +67,12 @@ public class buttonpressed2 : MonoBehaviour
 
         Debug.Log("OnTriggerExit called with " + other.name);
         hint3.SetActive(false);
+
+        // Stop the audio clip when the collider is exited
+        if (audioSource != null && audioClip != null)
+        {
+            audioSource.Stop();
+        }
     }
 
     // Update is called once per frame
